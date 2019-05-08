@@ -1,4 +1,4 @@
-from requests import post, get
+from requests import post, get, delete
 from uuid import uuid4
 
 
@@ -16,16 +16,34 @@ class DigitalOceanAPIv2(object):
 
     def create_droplet(self, region: str = None, size: str = None, image: str = None, name: str = None):
         data = {
+            "name": name if name else f"{uuid4()}",
             "region": region if region else "ams3",
             "size": size if size else "s-1vcpu-1gb",
-            "image": image if image else "docker-18-04",
-            "name": name if name else uuid4(),
+            "image": image if image else "docker-18-04"
         }
-        r = post(self._url + 'droplets', headers=self._headers, data=data)
+        r = post(self._url + 'droplets/', headers=self._headers, json=data)
         return r.json()
 
-    def list_regions(self):
-        r = get(self._url + 'regions', headers=self._headers)
+    def list_droplets(self, **kwargs):
+        r = get(self._url + 'droplets', headers=self._headers, params=kwargs)
+        return r.json()
+
+    def delete_droplet(self, id: int):
+        """
+        Delete a droplet
+        :param id: the id of the droplet to delete
+        :return: dict representing the status of the request
+        """
+        r = delete(self._url + f'droplets/{id}', headers=self._headers)
+        print(r.status_code)
+        if r.status_code == 204:
+            return {'status': 'deleted',
+                    'message': f'droplet with id [{id}] was deleted successfully'}
+        else:
+            return r.text
+
+    def list_regions(self, **kwargs):
+        r = get(self._url + 'regions', headers=self._headers, params=kwargs)
         return r.json()
 
     def list_images(self, result_per_page: int = 20, **kwargs):

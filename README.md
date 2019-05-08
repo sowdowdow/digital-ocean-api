@@ -1,5 +1,5 @@
 # digital-ocean-api 🌊
-__Work in progress 🚧🚧🚧__
+__Work in progress /!\🚧🚧🚧__
 
 A simple python wrapper for the Digital Ocean's API
 
