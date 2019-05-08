@@ -28,6 +28,10 @@ class DigitalOceanAPIv2(object):
         r = get(self._url + 'droplets', headers=self._headers, params=kwargs)
         return r.json()
 
+    def user_informations(self):
+        r = get(self._url + 'account', headers=self._headers)
+        return r.json()
+
     def delete_droplet(self, id: int):
         """
         Delete a droplet
